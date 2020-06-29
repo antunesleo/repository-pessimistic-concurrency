@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 from common import exceptions
 from common.domain import Aggregate, Entity, ValueObject
 
@@ -42,13 +44,17 @@ class Votes(ValueObject):
 
 class Question(Aggregate):
 
-    def __init__(self, id, title: str, text: str, author_id: int, votes: Votes, answers: list):
+    def __init__(self, id: int, title: str, text: str, author_id: int, votes: Votes, answers: list):
         self.__id = id
         self.__title = title
         self.__text = text
         self.__author_id = author_id
         self.__votes = votes
         self.__answers = answers
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def title(self) -> str:
@@ -87,3 +93,26 @@ class Question(Aggregate):
             if answer.id == answer_id:
                 answer.change_text(new_text)
         raise exceptions.NotFound('Answer {} not found'.format(answer_id))
+
+
+class QuestionRepository(ABC):
+
+    @abstractmethod
+    def get(self, id) -> Question:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_all(self) -> list:
+        raise NotImplementedError
+
+    @abstractmethod
+    def add(self, question: Question) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def update(self, question: Question) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def remove(self, question: Question) -> None:
+        raise NotImplementedError
