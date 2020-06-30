@@ -54,9 +54,9 @@ class ORMQuestionRepository(QuestionRepository):
         self._session.commit()
 
     def remove(self, question: Question) -> None:
-        # self._session.delete(car.dto)
-        # self._session.flush()
-        pass
+        question_row = self._session.merge(self.__create_row_from_question(question))
+        self._session.delete(question_row)
+        self._session.flush()
 
     @staticmethod
     def __create_row_from_question(question: Question) -> QuestionRow:

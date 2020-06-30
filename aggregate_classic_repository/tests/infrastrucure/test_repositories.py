@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from aggregate_classic_repository.src.domain.forum import Answer, Votes, Question
-from aggregate_classic_repository.src.infrastructure.repositories.forum import ORMQuestionRepository
+from aggregate_classic_repository.src.infrastructure.repositories import ORMQuestionRepository
+from common import exceptions
 
 
 class TestORMQuestionRepository(unittest.TestCase):
@@ -95,6 +96,52 @@ class TestORMQuestionRepository(unittest.TestCase):
         question = self.__orm_question_repository.get(1)
         self.assertIsInstance(question, Question)
         self.assertEqual(question.title, 'AAAAAAAA')
+
+    def test_should_remove_answer(self):
+        question = Question(
+            None,
+            'sed varius lectus accumsan',
+            '''Morbi feugiat felis sollicitudin ipsum tincidunt, at congue lectus maximus. 
+               Donec vehicula venenatis scelerisque. Proin nec purus vel diam 
+               blandit cursus at ac dolor. 
+               Fusce vel metus tellus. Nullam sed ligula ut lacus feugiat cursus. 
+               Etiam pellentesque purus in purus ornare dapibus. 
+               Donec gravida mauris eu venenatis fermentum.''',
+            3,
+            Votes(5, 9),
+            [
+                Answer(None, 'Cras molestie dui vitae nisl tempus', 1),
+                Answer(None, 'Vestibulum eu sapien vitae justo aliquet rhoncus non sed mauris', 2),
+                Answer(None, 'Vivamus tincidunt semper risus eget euismod.', 3)
+            ]
+        )
+        self.__orm_question_repository.add(question)
+        question = self.__orm_question_repository.get(1)
+        question.remove_answer(1)
+        self.__orm_question_repository.update(question)
+        question = self.__orm_question_repository.get(1)
+        self.assertIsInstance(question, Question)
+        self.assertEqual(len(question.answers), 2)
+
+    def test_should_remove(self):
+        question = Question(
+            None,
+            'sed varius lectus accumsan',
+            '''Morbi feugiat felis sollicitudin ipsum tincidunt, at congue lectus maximus. 
+               Donec vehicula venenatis scelerisque. Proin nec purus vel diam 
+               blandit cursus at ac dolor. 
+               Fusce vel metus tellus. Nullam sed ligula ut lacus feugiat cursus. 
+               Etiam pellentesque purus in purus ornare dapibus. 
+               Donec gravida mauris eu venenatis fermentum.''',
+            3,
+            Votes(5, 9),
+            []
+        )
+        self.__orm_question_repository.add(question)
+        question = self.__orm_question_repository.get(1)
+        self.__orm_question_repository.remove(question)
+        with self.assertRaises(exceptions.NotFound):
+            self.__orm_question_repository.get(1)
 
 
     def tearDown(self) -> None:

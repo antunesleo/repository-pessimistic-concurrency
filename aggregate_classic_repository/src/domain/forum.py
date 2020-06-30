@@ -79,6 +79,17 @@ class Question(Aggregate):
     def to_answer(self, answer: Answer):
         self.__answers.append(answer)
 
+    def remove_answer(self, answer_id):
+        answer_to_remove = None
+        for answer in self.__answers:
+            if answer.id == answer_id:
+                answer_to_remove = answer
+
+        try:
+            self.__answers.remove(answer_to_remove)
+        except ValueError:
+            raise exceptions.NotFound('answer_id {} not found in question'.format(answer_id))
+
     def edit_title(self, title: str):
         self.__title = title
 
