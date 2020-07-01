@@ -23,16 +23,16 @@ def upgrade():
         sa.Column('author_id', sa.Integer),
         sa.Column('title', sa.Text),
         sa.Column('text', sa.Text),
-        sa.Column('votes_up', sa.Text),
-        sa.Column('votes_down', sa.Text),
+        sa.Column('votes_up', sa.Integer),
+        sa.Column('votes_down', sa.Integer),
         sa.PrimaryKeyConstraint('id')
     )
 
     op.create_table(
         'answers',
         sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('question_id', sa.Text),
-        sa.Column('author_id', sa.Text),
+        sa.Column('question_id', sa.Integer),
+        sa.Column('author_id', sa.Integer),
         sa.Column('text', sa.Text),
         sa.PrimaryKeyConstraint('id')
     )

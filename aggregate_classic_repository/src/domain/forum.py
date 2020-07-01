@@ -62,7 +62,7 @@ class Question(Aggregate):
 
     @property
     def text(self) -> str:
-        return self.__title
+        return self.__text
 
     @property
     def author_id(self) -> int:
@@ -109,11 +109,11 @@ class Question(Aggregate):
 class QuestionRepository(ABC):
 
     @abstractmethod
-    def get(self, id) -> Question:
+    def get(self, id, for_read) -> Question:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all(self) -> list:
+    def get_all(self, for_read) -> list:
         raise NotImplementedError
 
     @abstractmethod

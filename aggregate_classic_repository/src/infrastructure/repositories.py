@@ -36,13 +36,18 @@ class ORMQuestionRepository(QuestionRepository):
         self._session = session
         self._query = self._session.query(QuestionRow)
 
-    def get(self, question_id) -> Question:
-        question_row = self._query.filter_by(id=question_id).one_or_none()
+    def get(self, question_id, for_read) -> Question:
+        if for_read:
+            query = self._query
+        else:
+            query = self._query.with_for_update()
+
+        question_row = query.filter_by(id=question_id).one_or_none()
         if not question_row:
             raise exceptions.NotFound(question_id)
         return self.__create_question_from_row(question_row)
 
-    def get_all(self) -> list:
+    def get_all(self, for_read) -> list:
         return [self.__create_question_from_row(question_row) for question_row in self._query.filter()]
 
     def add(self, question: Question) -> None:
