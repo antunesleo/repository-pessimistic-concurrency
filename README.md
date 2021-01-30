@@ -1,5 +1,5 @@
 # parallel-aggregates
-Studying the persistence implementation of aggregates in parallel in repository and active record patterns
+Studying the persistence implementation of repository pattern with pessismitic concurrency.
 
 ### Pre-requisites
 * sqlite
@@ -7,7 +7,7 @@ Studying the persistence implementation of aggregates in parallel in repository 
 
 # Setup
 
-    $ mkvirtualenv -p python3.8 paralleo-aggregates
+    $ mkvirtualenv -p python3.8 repository-pessimistic-concurrency
     $ workon python3.8
     $ pip install -r requirements.txt
 
